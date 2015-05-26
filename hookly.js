@@ -7079,9 +7079,11 @@ hookly.Adapter = function(url) {
 
     that.socket.on('connect', function() {
       that.connected = true;
+      that.socket.emit('connections:create', JSON.stringify(that.options));
 
-      that.socket.emit('connections:create', JSON.stringify(options));
-      that.socket.on('message', that.call);
+      for(var key in connections) {
+        that.socket.emit('connections:update', JSON.stringify(connections[key]));
+      }
 
       flushSendQueue();
     });
@@ -7089,6 +7091,8 @@ hookly.Adapter = function(url) {
     that.socket.on('disconnect', function() {
       that.connected = false;
     });
+
+    that.socket.on('message', that.call);
   };
 
   that.channel = function(options) { var channel;

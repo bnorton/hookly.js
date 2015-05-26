@@ -1,7 +1,7 @@
 {
   "name": "hookly.js",
   "repository": "https://github.com/bnorton/hookly.js.git",
-  "version": "0.1.1",
+  "version": "0.9.0",
   "license": "MIT",
   "description": "Realtime communication with anything.",
   "keywords": [
