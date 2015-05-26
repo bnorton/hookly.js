@@ -1,0 +1,24 @@
+{
+  "name": "hookly.js",
+  "repository": "https://github.com/bnorton/hookly.js.git",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Realtime communication with anything.",
+  "keywords": [
+    "realtime",
+    "websocket",
+    "events",
+    "notifications",
+    "hookly"
+  ],
+  "dependencies": {
+    "socket.io-client": "1.3.x",
+    "clone": "1.x"
+  },
+  "devDependencies": {
+    "minijasminenode2": "*"
+  },
+  "scripts": {
+    "test": "./node_modules/minijasminenode2/bin/minijn --verbose --forceexit **/*_spec.js"
+  }
+}
