@@ -1,5 +1,5 @@
 describe('Adapter', function() {
-  var hookly = require('../index'),
+  var hookly = require('../lib/index'),
     adapter, socket, onMessages, onCallbacks;
 
   beforeEach(function() {

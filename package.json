@@ -12,13 +12,9 @@
     "hookly"
   ],
   "dependencies": {
-    "socket.io-client": "1.3.x",
-    "clone": "1.x"
+    "socket.io-client": "1.3.x"
   },
   "devDependencies": {
     "minijasminenode2": "*"
-  },
-  "scripts": {
-    "test": "./node_modules/minijasminenode2/bin/minijn --verbose --forceexit **/*_spec.js"
   }
 }

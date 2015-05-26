@@ -1,7 +1,7 @@
 describe('hookly', function() {
   var adapter,
     message,
-    hookly = require('../index'),
+    hookly = require('../lib/index'),
     receiveMessage = function() {
       adapter.call(message);
     };
