@@ -191,11 +191,38 @@ describe('Adapter', function() {
     beforeEach(function() {
       opts = { foo: 'baz' };
 
-      adapter.send(opts);
+      adapter.connect({});
+      adapter.connected = true;
     });
 
     it('should create the note', function() {
+      adapter.send(opts);
       expect(socket.emit).toHaveBeenCalledWith('notes:create', JSON.stringify({ foo: 'baz' }));
+    });
+
+    describe('when the adapter is disconnected', function() {
+      beforeEach(function() {
+        expect(onMessages[1]).toBe('disconnect');
+
+        onCallbacks[1]();
+        adapter.send(opts);
+      });
+
+      it('should not create the note', function() {
+        expect(socket.emit).not.toHaveBeenCalled();
+      });
+
+      describe('when it reconnects', function() {
+        beforeEach(function() {
+          expect(onMessages[0]).toBe('connect');
+
+          onCallbacks[0]();
+        });
+
+        it('should create the queued note', function() {
+          expect(socket.emit).toHaveBeenCalledWith('notes:create', JSON.stringify({ foo: 'baz' }));
+        });
+      });
     });
   });
 });

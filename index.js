@@ -66,7 +66,7 @@ hookly.Adapter = function(url) {
     io: require('socket.io-client'),
     initialized: false,
     connected: false
-  };
+  }, sendQueue = [];
 
   that.socket = that.io(that.url);
 
@@ -84,14 +84,13 @@ hookly.Adapter = function(url) {
 
       that.socket.emit('connections:create', JSON.stringify(options));
       that.socket.on('message', that.call);
+
+      flushSendQueue();
     });
 
     that.socket.on('disconnect', function() {
       that.connected = false;
     });
-
-    // that.channel(options, 'create'); // Add things to options
-    //that.socket.emit('connect:create', options); // This is who I am as a user
   };
 
   that.channel = function(options) { var channel;
@@ -113,10 +112,22 @@ hookly.Adapter = function(url) {
   };
 
   that.send = function(options) {
-    that.socket.emit('notes:create', JSON.stringify(options));
+    sendQueue.push(options);
+
+    if(that.connected) {
+      flushSendQueue();
+    }
   };
 
   return that;
+
+  function flushSendQueue() {
+    for(var i=0; i<sendQueue.length; ++i) {
+      that.socket.emit('notes:create', JSON.stringify(sendQueue[i]));
+    }
+
+    sendQueue = [];
+  }
 };
 
 exports = module.exports = hookly.reset();
