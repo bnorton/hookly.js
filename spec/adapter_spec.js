@@ -46,20 +46,24 @@ describe('Adapter', function() {
       expect(adapter.options).toEqual({foo: 'bar'});
     });
 
-    it('should listen for connection', function() {
-      expect(onMessages.length).toBe(2);
-      expect(onCallbacks.length).toBe(2);
+    it('should listen for the defaults', function() {
+      expect(onMessages.length).toBe(3);
+      expect(onCallbacks.length).toBe(3);
+    });
 
+    it('should listen for connection', function() {
       expect(onMessages[0]).toBe('connect');
       expect(typeof onCallbacks[0]).toBe('function');
     });
 
     it('should listen for disconnect', function() {
-      expect(onMessages.length).toBe(2);
-      expect(onCallbacks.length).toBe(2);
-
       expect(onMessages[1]).toBe('disconnect');
       expect(typeof onCallbacks[1]).toBe('function');
+    });
+
+    it('should listen for messages', function() {
+      expect(onMessages[2]).toBe('message');
+      expect(onCallbacks[2]).toBe(adapter.call);
     });
 
     describe('when the connection is made', function() {
@@ -76,14 +80,6 @@ describe('Adapter', function() {
         expect(socket.emit).toHaveBeenCalledWith('connections:create', JSON.stringify({foo: 'bar'}));
       });
 
-      it('should listen for messages', function() {
-        expect(onMessages.length).toBe(3);
-        expect(onCallbacks.length).toBe(3);
-
-        expect(onMessages[2]).toBe('message');
-        expect(typeof onCallbacks[2]).toBe('function');
-      });
-
       describe('when the connection is dropped', function() {
         beforeEach(function() {
           onCallbacks[1]();
@@ -94,17 +90,32 @@ describe('Adapter', function() {
         });
 
         describe('when the connection is restored', function() {
-          beforeEach(function() {
-            onCallbacks[0]();
-          });
-
           it('should re-create the connection', function() {
+            onCallbacks[0]();
+
             expect(socket.emit.calls.count()).toBe(2);
             expect(socket.emit).toHaveBeenCalledWith('connections:create', JSON.stringify({foo: 'bar'}));
           });
 
           it('should not be connected', function() {
+            onCallbacks[0]();
+
             expect(adapter.connected).toBe(true);
+          });
+
+          describe('when there are other listeners', function() {
+            beforeEach(function() {
+              hookly.on('#transactions', function() {});
+              hookly.on('#chats', function() {});
+
+              onCallbacks[0]();
+            });
+
+            it('should re-create the connection', function() {
+              expect(socket.emit.calls.count()).toBe(4);
+              expect(socket.emit).toHaveBeenCalledWith('connections:update', JSON.stringify({ token: 'a', uid: 'b', slug: '#transactions' }));
+              expect(socket.emit).toHaveBeenCalledWith('connections:update', JSON.stringify({ token: 'a', uid: 'b', slug: '#chats' }));
+            });
           });
         });
       });
