@@ -24,6 +24,14 @@ describe('hookly', function() {
       expect(hookly.token).toBe('token-123');
     });
 
+    it('should have the url', function() {
+      expect(hookly.url).toBe('https://hookly.herokuapp.com');
+    });
+
+    it('should create the adapter', function() {
+      expect(hookly.Adapter).toHaveBeenCalledWith('https://hookly.herokuapp.com');
+    });
+
     it('should connect the adapter', function() {
       expect(adapter.connect).toHaveBeenCalledWith({ token: 'token-123' });
     });
@@ -37,8 +45,34 @@ describe('hookly', function() {
         expect(hookly.uid).toBe('user-identifier-123');
       });
 
+      it('should have the url', function() {
+        expect(hookly.url).toBe('https://hookly.herokuapp.com');
+      });
+
       it('should connect the adapter', function() {
         expect(adapter.connect).toHaveBeenCalledWith({ token: 'token-123', uid: 'user-identifier-123' });
+      });
+    });
+
+    describe('when given a url', function() {
+      beforeEach(function() {
+        hookly.start('token-123', null, 'foo-bar.com/realtime');
+      });
+
+      it('should not have the user identifier', function() {
+        expect(hookly.uid).toBeNull();
+      });
+
+      it('should have the url', function() {
+        expect(hookly.url).toBe('foo-bar.com/realtime');
+      });
+
+      it('should create the adapter', function() {
+        expect(hookly.Adapter).toHaveBeenCalledWith('foo-bar.com/realtime');
+      });
+
+      it('should connect the adapter', function() {
+        expect(adapter.connect).toHaveBeenCalledWith({ token: 'token-123' });
       });
     });
   });
