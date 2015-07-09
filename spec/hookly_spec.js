@@ -32,6 +32,10 @@ describe('hookly', function() {
       expect(hookly.Adapter).toHaveBeenCalledWith('https://hookly.herokuapp.com');
     });
 
+    it('should have the adapter', function() {
+      expect(hookly.adapter).toBe(adapter);
+    });
+
     it('should connect the adapter', function() {
       expect(adapter.connect).toHaveBeenCalledWith({ token: 'token-123' });
     });
