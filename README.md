@@ -12,6 +12,7 @@
  - [Installation](#installation)
  - [Getting Started](#getting-started)
  - [Advanced Setup](#advanced-setup)
+ - [Testing](#testing)
  
 ##Installation
 
@@ -59,4 +60,24 @@ bower install hookly.js
  1. Send a message from the current user to another (who is identified by `5a4f67`)
  ```javascript
  hookly.notify('#updates', '5a4f67', { id: 1538, name: 'New name' }
+ ```
+
+# Testing
+
+#### Send and receive messages without making external connections
+
+ 1. Start hookly with an explicit URL (that will points to nothing)
+ ```javascript
+ hookly.start('{{token}}', null, 'http://localhost:3000')
+ ```
+
+ 1. Leave all of your other channel listening code alone
+
+ 1. Send a message to your channel listeners explicitly call the hookly adapter with a `payload`
+  - Send a `slug` as the channel
+  - Send a `body` as the object to pass to the channel listener
+  - Send a `kind` of 'local'
+
+ ```javascript
+ hookly.adapter.call(JSON.stringify({slug: '#updates', body: {id: 5}, kind: 'local'}))
  ```
