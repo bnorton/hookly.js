@@ -67,7 +67,7 @@ bower install hookly.js
 
 #### Send and receive messages without making external connections
 
- 1. Start hookly with an explicit URL (that will points to nothing)
+ 1. Start hookly with an explicit URL (that points to nothing)
  ```javascript
  hookly.start('{{token}}', null, 'http://localhost:3000')
  ```
